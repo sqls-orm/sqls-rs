@@ -1,0 +1,15 @@
+[package]
+name = "sql"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "sql"
+path = "src/lib.rs"
+edition = "2021"
+crate-type = ["lib"]
+
+[dependencies]
+
+[dev-dependencies]
+tokio = { version = "1.39.3", features = ["full"] }
