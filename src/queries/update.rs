@@ -19,5 +19,4 @@ impl Query for UpdateQuery {
 }
 
 impl mixin::WhereMixin for UpdateQuery {}
-
 impl mixin::ReturningMixin for UpdateQuery {}

@@ -4,6 +4,8 @@ use crate::queries::_traits::Query;
 
 pub trait IntoMixin: Query {
     fn into_(&mut self, table: impl Display) -> &Self {
-        self.updated(format!("INTO {table}"), None::<&mut Vec<_>>)
+        let query = format!("INTO {table}");
+        let args = None;
+        self.updated(query, args)
     }
 }

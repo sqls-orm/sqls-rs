@@ -17,6 +17,18 @@ impl ColToVal for Column {
     }
 }
 
+impl ColToVal for Vec<Column> {
+    fn parse(&mut self) -> (String, &mut Vec<Box<impl Display>>) {
+        let mut query = String::default();
+        let mut args = vec![];
+        for col in self {
+            query.push_str(col.val.as_str());
+            args.append(&mut col.args)
+        }
+        (query, &mut args)
+    }
+}
+
 impl ColToVal for HashMap<Column, dyn Display> {
     fn parse(&mut self) -> (String, &mut Vec<Box<impl Display>>) {
         let mut query = String::default();

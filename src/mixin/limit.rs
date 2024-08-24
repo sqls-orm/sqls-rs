@@ -2,7 +2,12 @@ use std::fmt::Display;
 use crate::queries::_traits::Query;
 
 pub trait LimitMixin: Query {
-    fn limit(&mut self, limit: impl Into<u128> + Display) -> &Self {
-        self.updated(format!("LIMIT %s"), Some(&mut vec![limit]))
+    fn limit<T>(&mut self, limit: T) -> &Self
+    where
+        T: Into<u128> + Display,
+    {
+        let query = format!("LIMIT %s");
+        let args = Some(&mut vec![limit]);
+        self.updated(query, args)
     }
 }
