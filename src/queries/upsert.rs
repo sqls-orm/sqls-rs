@@ -1,7 +1,23 @@
+use std::fmt::Display;
+
 use crate::mixin;
+use crate::queries::_traits::Query;
 
-struct InsertQuery {}
+pub struct UpsertQuery {
+    pub parts: Vec<String>,
+    pub args: Vec<Box<dyn Display>>,
+}
 
-impl mixin::IntoMixin for InsertQuery {}
-impl mixin::ValuesMixin for InsertQuery {}
-impl mixin::ReturningMixin for InsertQuery {}
+impl Query for UpsertQuery {
+    fn updated(&mut self, query: String, args: Option<&mut Vec<impl Display>>) -> &Self {
+        self.parts.push(query);
+        if let Some(args) = args {
+            self.args.append(args);
+        }
+        self
+    }
+}
+
+impl mixin::IntoMixin for UpsertQuery {}
+impl mixin::ValuesMixin for UpsertQuery {}
+impl mixin::ReturningMixin for UpsertQuery {}
