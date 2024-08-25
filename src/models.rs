@@ -1,44 +1,51 @@
 use std::fmt::{Display, Formatter};
-use std::sync::Arc;
-use lazy_static;
 
 use crate::types::Column;
-use crate::utils;
 
-struct UserModel {
-    pub id: Column,
-    pub username: Column,
-    pub password: Column,
+pub struct User {
+    pub id: u8,
+    pub username: String,
+    pub password: String,
 }
 
-impl Display for UserModel {
+impl User {
+    pub fn id() -> Column {
+        Column::from("id".to_string())
+    }
+    pub fn username() -> Column {
+        Column::from("username".to_string())
+    }
+    pub fn password() -> Column {
+        Column::from("password".to_string())
+    }
+}
+
+impl Display for User {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         f.write_str("user")
     }
 }
 
-struct AppModel {
+pub struct App {
     pub id: Column,
     pub name: Column,
     pub user_id: Column,
 }
 
-impl Display for AppModel {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        f.write_str("app")
+impl App {
+    pub fn id() -> Column {
+        Column::from("id".to_string())
+    }
+    pub fn name() -> Column {
+        Column::from("name".to_string())
+    }
+    pub fn user_id() -> Column {
+        Column::from("user_id".to_string())
     }
 }
 
-lazy_static::lazy_static! {
-    pub static ref User: UserModel = UserModel {
-        id: Column { val: "id".to_string(), args: utils::args() },
-        username: Column { val: "username".to_string(), args: utils::args() },
-        password: Column { val: "password".to_string(), args: utils::args() },
-    };
-
-    pub static ref App: AppModel = AppModel {
-        id: Column { val: "id".to_string(), args: utils::args() },
-        name: Column { val: "name".to_string(), args: utils::args() },
-        user_id: Column { val: "user_id".to_string(), args: utils::args() },
-    };
+impl Display for App {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        f.write_str("app")
+    }
 }
