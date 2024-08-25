@@ -3,6 +3,8 @@ use crate::types::Column;
 
 pub trait WhereMixin: Query {
     fn where_(&mut self, conditions: Column) -> &Self {
-        self.updated(conditions.val, Some(conditions.args))
+        let query = conditions.val;
+        let args = conditions.args;
+        self.updated(query, args)
     }
 }

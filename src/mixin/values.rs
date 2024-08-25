@@ -1,8 +1,11 @@
-use crate::queries::_traits::{ColToVal, Query};
+use crate::queries::_traits::Query;
+use crate::types::Column;
+use crate::utils;
 
 pub trait ValuesMixin: Query {
-    fn values(&mut self, values: &mut impl ColToVal) -> &Self {
-        let (query, args) = values.parse();
-        self.updated(query, Some(args))
+    fn values(&mut self, values: Vec<Column>) -> &Self
+    {
+        let (query, args) = utils::parse(values);
+        self.updated(query, args)
     }
 }

@@ -9,10 +9,13 @@ pub struct UpsertQuery {
 }
 
 impl Query for UpsertQuery {
-    fn updated(&mut self, query: String, args: Option<&mut Vec<impl Display>>) -> &Self {
+    fn updated<T>(&mut self, query: String, args: Vec<T>) -> &Self
+    where
+        T: Display + 'static,
+    {
         self.parts.push(query);
-        if let Some(args) = args {
-            self.args.append(args);
+        for e in args {
+            self.args.push(Box::new(e))
         }
         self
     }

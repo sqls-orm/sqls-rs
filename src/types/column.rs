@@ -1,5 +1,7 @@
 use std::fmt::{Display, Formatter, Result};
 
+use crate::utils;
+
 pub struct Column {
     pub val: String,
     pub args: Vec<Box<dyn Display>>,
@@ -39,36 +41,58 @@ impl Column {
 
 impl Column {
     pub fn or(&self, other: Self) -> Self {
-        Self { val: format!("{} OR {}", self.val, other), args: [&self.args, &other.args].concat() }
+        let val = format!("{} OR {}", self.val, other);
+        let args = utils::merge(&self.args, &other.args);
+        Self { val, args }
     }
 
     pub fn and(&self, other: Self) -> Self {
-        Self { val: format!("{} AND {}", self.val, other), args: [&self.args, &other.args].concat() }
+        let val = format!("{} AND {}", self.val, other);
+        let args = utils::merge(&self.args, &other.args);
+        Self { val, args }
     }
 }
 
 impl Column {
-    pub fn eq(&self, other: impl Display) -> Self {
+    pub fn eq<T>(&self, other: T) -> Self
+    where
+        T: Display + 'static,
+    {
         Self { val: format!("{} = ?", self.val), args: vec![Box::new(other)] }
     }
 
-    pub fn ne(&self, other: impl Display) -> Self {
+    pub fn ne<T>(&self, other: T) -> Self
+    where
+        T: Display + 'static,
+    {
         Self { val: format!("{} != ?", self.val), args: vec![Box::new(other)] }
     }
 
-    pub fn gt(&self, other: impl Display) -> Self {
+    pub fn gt<T>(&self, other: T) -> Self
+    where
+        T: Display + 'static,
+    {
         Self { val: format!("{} > ?", self.val), args: vec![Box::new(other)] }
     }
 
-    pub fn ge(&self, other: impl Display) -> Self {
+    pub fn ge<T>(&self, other: T) -> Self
+    where
+        T: Display + 'static,
+    {
         Self { val: format!("{} >= ?", self.val), args: vec![Box::new(other)] }
     }
 
-    pub fn lt(&self, other: impl Display) -> Self {
+    pub fn lt<T>(&self, other: T) -> Self
+    where
+        T: Display + 'static,
+    {
         Self { val: format!("{} < ?", self.val), args: vec![Box::new(other)] }
     }
 
-    pub fn le(&self, other: impl Display) -> Self {
+    pub fn le<T>(&self, other: T) -> Self
+    where
+        T: Display + 'static,
+    {
         Self { val: format!("{} <= ?", self.val), args: vec![Box::new(other)] }
     }
 }

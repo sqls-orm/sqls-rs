@@ -4,10 +4,10 @@ use crate::queries::_traits::Query;
 pub trait OffsetMixin: Query {
     fn offset<T>(&mut self, offset: T) -> &Self
     where
-        T: Into<u128> + Display,
+        T: Into<u128> + Display + 'static,
     {
         let query = format!("OFFSET %s");
-        let args = Some(&mut vec![offset]);
+        let args = vec![offset];
         self.updated(query, args)
     }
 }

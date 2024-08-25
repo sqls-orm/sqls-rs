@@ -1,8 +1,9 @@
 use std::fmt::Display;
+use crate::types::Column;
 
 mod mixin;
-mod vendors;
 mod queries;
+pub mod utils;
 pub mod types;
 
 #[macro_export]
@@ -19,30 +20,40 @@ pub fn insert() -> queries::InsertQuery {
     }
 }
 
-pub fn select(columns: Vec<impl Display>) -> queries::SelectQuery {
+pub fn select(columns: Vec<Column>) -> queries::SelectQuery {
+    let (query, args) = utils::parse(columns);
     queries::SelectQuery {
-        parts: columns.join(", "),
-        args: vec![],
+        parts: vec![query],
+        args: args,
     }
 }
 
 pub fn delete() -> queries::DeleteQuery {
+    let query = format!("DELETE");
+    let args = utils::args();
     queries::DeleteQuery {
-        parts: vec![],
-        args: vec![],
+        parts: vec![query],
+        args: args,
     }
 }
 
-pub fn update() -> queries::UpdateQuery {
+pub fn update<T>(table: T) -> queries::UpdateQuery
+where
+    T: Display,
+{
+    let query = format!("UPDATE {table}");
+    let args = utils::args();
     queries::UpdateQuery {
-        parts: vec![],
-        args: vec![],
+        parts: vec![query],
+        args: args,
     }
 }
 
 pub fn upsert() -> queries::UpsertQuery {
+    let query = format!("REPLACE");
+    let args = utils::args();
     queries::UpsertQuery {
-        parts: vec![],
-        args: vec![],
+        parts: vec![query],
+        args: args,
     }
 }

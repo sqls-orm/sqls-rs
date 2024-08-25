@@ -16,5 +16,5 @@ async fn main() {
         ).and(models::App.id.eq(1))
     ).order_by(vec![
         models::User.username.desc(),
-    ]).limit(10).offset(0);
+    ]).limit(10u8).offset(0u8);
 }

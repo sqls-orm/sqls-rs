@@ -1,7 +1,8 @@
 use std::fmt::Display;
 
-use crate::mixin;
-use crate::queries::_traits::{ColToVal, Query};
+use crate::{mixin, utils};
+use crate::queries::_traits::Query;
+use crate::types::Column;
 
 pub struct InsertQuery {
     pub parts: Vec<String>,
@@ -9,10 +10,13 @@ pub struct InsertQuery {
 }
 
 impl Query for InsertQuery {
-    fn updated(&mut self, query: String, args: Option<&mut Vec<impl Display>>) -> &Self {
+    fn updated<T>(&mut self, query: String, args: Vec<T>) -> &Self
+    where
+        T: Display + 'static,
+    {
         self.parts.push(query);
-        if let Some(args) = args {
-            self.args.append(args);
+        for e in args {
+            self.args.push(Box::new(e))
         }
         self
     }
@@ -20,16 +24,20 @@ impl Query for InsertQuery {
 
 impl InsertQuery {
     pub fn on_duplicate(&mut self) -> &Self {
-        self.updated("ON DUPLICATE".to_string(), vec![])
+        let query = "ON DUPLICATE".to_string();
+        let args = utils::args();
+        self.updated(query, args)
     }
 
-    pub fn update(&mut self, values: impl ColToVal) -> &Self {
-        let (query, args) = values.parse();
+    pub fn update(&mut self, values: Vec<Column>) -> &Self {
+        let (query, args) = utils::parse(values);
         self.updated(query, args)
     }
 
     pub fn ignore(&mut self) -> &Self {
-        self.updated("IGNORE".to_string(), vec![])
+        let query = "IGNORE".to_string();
+        let args = utils::args();
+        self.updated(query, args)
     }
 }
 

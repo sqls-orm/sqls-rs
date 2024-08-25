@@ -5,7 +5,7 @@ mod autogen;
 
 #[tokio::test]
 async fn main() {
-    let _ = sql::insert().into_(&models::User).values(&mut vec![
+    let _ = sql::insert().into_(&models::User).values(vec![
         models::User.username.eq("username"),
         models::User.password.eq("password"),
     ]).on_duplicate().update(sql::map!{
@@ -15,10 +15,10 @@ async fn main() {
         models::User.password,
     ]);
 
-    let _ = sql::insert().into_(&models::User).values(&mut sql::map!{
-        &models::User.username => "username",
-        &models::User.password => "password",
-    }).on_duplicate().update(sql::map!{
+    let _ = sql::insert().into_(&models::User).values(vec![
+        models::User.username.eq("username"),
+        models::User.password.eq("password"),
+    ]).on_duplicate().update(sql::map!{
         &models::User.password => "newpass",
     }).returning("*");
 }
