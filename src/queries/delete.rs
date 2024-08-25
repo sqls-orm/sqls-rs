@@ -9,7 +9,7 @@ pub struct DeleteQuery {
 }
 
 impl Query for DeleteQuery {
-    fn updated<T>(&mut self, query: String, args: Vec<T>) -> &Self
+    fn updated<T>(&mut self, query: String, args: Vec<T>) -> &mut Self
     where
         T: Display + 'static,
     {

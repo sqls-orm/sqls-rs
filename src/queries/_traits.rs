@@ -4,7 +4,7 @@ use std::fmt::Display;
 use crate::types::Column;
 
 pub trait Query {
-    fn updated<T>(&mut self, query: String, args: Vec<T>) -> &Self
+    fn updated<T>(&mut self, query: String, args: Vec<T>) -> &mut Self
     where
         T: Display + 'static;
 }

@@ -1,7 +1,8 @@
 use std::fmt::Display;
 use crate::types::Column;
 
-mod mixin;
+pub mod models;
+pub mod mixin;
 mod queries;
 pub mod utils;
 pub mod types;
@@ -20,7 +21,7 @@ pub fn insert() -> queries::InsertQuery {
     }
 }
 
-pub fn select(columns: Vec<Column>) -> queries::SelectQuery {
+pub fn select<'a>(columns: Vec<Column>) -> queries::SelectQuery {
     let (query, args) = utils::parse(columns);
     queries::SelectQuery {
         parts: vec![query],

@@ -2,7 +2,7 @@ use std::fmt::Display;
 use crate::queries::_traits::Query;
 
 pub trait LimitMixin: Query {
-    fn limit<T>(&mut self, limit: T) -> &Self
+    fn limit<T>(&mut self, limit: T) -> &mut Self
     where
         T: Into<u128> + Display + 'static,
     {

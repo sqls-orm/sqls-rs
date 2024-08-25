@@ -4,7 +4,7 @@ use crate::queries::_traits::Query;
 use crate::utils;
 
 pub trait OrderByMixin: Query {
-    fn order_by<T>(&mut self, columns: Vec<T>) -> &Self
+    fn order_by<T>(&mut self, columns: Vec<T>) -> &mut Self
     where
         T: Display + 'static,
     {

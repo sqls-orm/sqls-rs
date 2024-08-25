@@ -2,7 +2,7 @@ use std::fmt::Display;
 use crate::queries::_traits::Query;
 
 pub trait OffsetMixin: Query {
-    fn offset<T>(&mut self, offset: T) -> &Self
+    fn offset<T>(&mut self, offset: T) -> &mut Self
     where
         T: Into<u128> + Display + 'static,
     {

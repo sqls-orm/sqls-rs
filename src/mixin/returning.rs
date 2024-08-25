@@ -4,7 +4,7 @@ use crate::queries::_traits::Query;
 use crate::utils;
 
 pub trait ReturningMixin: Query {
-    fn returning<T>(&mut self, columns: Vec<T>) -> &Self
+    fn returning<T>(&mut self, columns: Vec<T>) -> &mut Self
     where
         T: Display + 'static,
     {

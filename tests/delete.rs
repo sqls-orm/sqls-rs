@@ -1,9 +1,8 @@
-use autogen::models;
 use sql;
+use sql::models;
+use sql::mixin::*;
 
-mod autogen;
-
-#[tokio::test]
+#[test]
 async fn main() {
     let _ = sql::select(vec![
         models::User.username.as_("username"),

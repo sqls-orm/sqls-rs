@@ -1,24 +1,16 @@
-use autogen::models;
 use sql;
+use sql::mixin::*;
+use sql::models;
 
-mod autogen;
-
-#[tokio::test]
+#[test]
 async fn main() {
-    let _ = sql::insert().into_(&models::User).values(vec![
+    let _ = sql::insert().into_(models::User).values(vec![
         models::User.username.eq("username"),
         models::User.password.eq("password"),
-    ]).on_duplicate().update(sql::map!{
-        &models::User.password => "newpass",
-    }).returning(vec![
-        models::User.username,
-        models::User.password,
+    ]).on_duplicate().update(vec![
+        models::User.password.eq("newpass"),
+    ]).returning(vec![
+        &models::User.username,
+        &models::User.password,
     ]);
-
-    let _ = sql::insert().into_(&models::User).values(vec![
-        models::User.username.eq("username"),
-        models::User.password.eq("password"),
-    ]).on_duplicate().update(sql::map!{
-        &models::User.password => "newpass",
-    }).returning("*");
 }

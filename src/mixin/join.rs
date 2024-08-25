@@ -4,7 +4,7 @@ use crate::queries::_traits::Query;
 use crate::types::Column;
 
 pub trait JoinMixin: Query {
-    fn join<T>(&mut self, table: T) -> &Self
+    fn join<T>(&mut self, table: T) -> &mut Self
     where
         T: Display + 'static,
     {
@@ -13,7 +13,7 @@ pub trait JoinMixin: Query {
         self.updated(query, args)
     }
 
-    fn on(&mut self, on: Column) -> &Self {
+    fn on(&mut self, on: Column) -> &mut Self {
         let query = format!("ON {on}");
         let args = on.args;
         self.updated(query, args)

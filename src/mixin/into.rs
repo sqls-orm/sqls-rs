@@ -3,7 +3,7 @@ use std::fmt::Display;
 use crate::queries::_traits::Query;
 
 pub trait IntoMixin: Query {
-    fn into_<T>(&mut self, table: T) -> &Self
+    fn into_<T>(&mut self, table: T) -> &mut Self
     where
         T: Display + 'static,
     {
