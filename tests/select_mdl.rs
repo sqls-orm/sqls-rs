@@ -24,8 +24,8 @@ async fn select_specific() {
 #[tokio::test]
 async fn select_alias() {
     let (query, args) = sql::select(vec![
-        models::User::username().as_("username"),
-        models::User::password().as_("password"),
+        models::User::username().as_("username_alias"),
+        models::User::password().as_("password_alias"),
     ])
         .from(models::User::table())
         .build();

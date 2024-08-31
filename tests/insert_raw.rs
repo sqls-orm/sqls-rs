@@ -1,17 +1,70 @@
-use sql::models::Model;
-use sql::models;
 use sql;
 
 #[tokio::test]
-async fn main() {
-    let (query, args) = sql::insert().into_(models::User::table()).values(vec![
-        models::User::username().eq("username"),
-        models::User::password().eq("password"),
-    ]).on_duplicate().update(vec![
-        models::User::password().eq("newpass"),
-    ]).returning(vec![
-        models::User::username(),
-        models::User::password(),
-    ]).build();
+async fn insert_default() {
+    let (query, args) = sql::insert()
+        .into_("user")
+        .values(vec![
+            "username",
+            "password",
+        ])
+        .build();
+    println!("{} {:?}", query, args);
+}
+
+#[tokio::test]
+async fn insert_update() {
+    let (query, args) = sql::insert()
+        .into_("user")
+        .values(vec![
+            "username",
+            "password",
+        ]).on_duplicate()
+        .update(vec![
+            "password = \"newpass\"",
+        ])
+        .build();
+    println!("{} {:?}", query, args);
+}
+
+#[tokio::test]
+async fn insert_ignore() {
+    let (query, args) = sql::insert()
+        .ignore()
+        .into_("user")
+        .values(vec![
+            "username",
+            "password",
+        ])
+        .build();
+    println!("{} {:?}", query, args);
+}
+
+#[tokio::test]
+async fn insert_returning_all() {
+    let (query, args) = sql::insert()
+        .into_("user")
+        .values(vec![
+            "username",
+            "password",
+        ])
+        .returning()
+        .build();
+    println!("{} {:?}", query, args);
+}
+
+#[tokio::test]
+async fn insert_returning_specific() {
+    let (query, args) = sql::insert()
+        .into_("user")
+        .values(vec![
+            "username",
+            "password",
+        ])
+        .returning(vec![
+            "username",
+            "password",
+        ])
+        .build();
     println!("{} {:?}", query, args);
 }

@@ -11,6 +11,15 @@ pub struct Query {
 }
 
 impl Query {
+    pub fn new(parts: Vec<String>, args: Vec<Box<dyn Any + Send + Sync>>) -> Self {
+        Self {
+            parts: Arc::new(Mutex::new(parts)),
+            args: Arc::new(Mutex::new(args)),
+        }
+    }
+}
+
+impl Query {
     pub fn from<T>(&self, table: T) -> &Self
     where
         T: Display + 'static,
@@ -38,7 +47,7 @@ impl Query {
         self
     }
 
-    pub fn on(&self, on: &Column) -> &Self {
+    pub fn on<T>(&self, on: T) -> &Self where T: Display + 'static {
         let mut parts = self.parts.lock().unwrap();
         parts.push(format!("ON {on}"));
         self
@@ -124,6 +133,18 @@ impl Query {
             args.append(&mut col.args.lock().unwrap());
         }
         parts.push(format!("UPDATE {}", part.join(", ")));
+        self
+    }
+
+    pub fn set(&self, values: Vec<&Column>) -> &Self {
+        let mut parts = self.parts.lock().unwrap();
+        let mut part = Vec::<String>::default();
+        let mut args = self.args.lock().unwrap();
+        for col in values {
+            part.push(col.val.lock().unwrap().to_string());
+            args.append(&mut col.args.lock().unwrap());
+        }
+        parts.push(format!("SET {}", part.join(", ")));
         self
     }
 

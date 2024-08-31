@@ -2,16 +2,20 @@ use sql;
 
 #[tokio::test]
 async fn select_default() {
-    let (query, args) = sql::select().from("user").build();
+    let (query, args) = sql::select()
+        .from("user")
+        .build();
     println!("{} {:?}", query, args);
 }
 
 #[tokio::test]
 async fn select_specific() {
     let (query, args) = sql::select(vec![
-        models::User::username().as_("username"),
-        models::User::password().as_("password"),
-    ]).from("user").build();
+        "username",
+        "password",
+    ])
+        .from("user")
+        .build();
     println!("{} {:?}", query, args);
 }
 
@@ -66,7 +70,8 @@ async fn select_extra() {
     let (query, args) = sql::select(vec![
         "username",
         "password",
-    ]).from("user")
+    ])
+        .from("user")
         .join("app")
         .on("user.id = app.user_id")
         .where_(r#"
