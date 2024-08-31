@@ -14,7 +14,7 @@ pub fn insert() -> Query {
     Query { parts, args }
 }
 
-pub fn select(columns: Vec<Column>) -> Query {
+pub fn select(columns: Vec<&Column>) -> Query {
     let mut parts = Vec::<String>::default();
     let mut part = Vec::<String>::default();
     for col in columns {

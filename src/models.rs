@@ -1,5 +1,3 @@
-use std::fmt::{Display, Formatter};
-
 use crate::types::Column;
 
 pub struct User {
@@ -8,21 +6,25 @@ pub struct User {
     pub password: String,
 }
 
+pub trait Model {
+    fn table() -> &'static str;
+}
+
 impl User {
     pub fn id() -> Column {
-        Column::from("id".to_string())
+        Column::new("id")
     }
     pub fn username() -> Column {
-        Column::from("username".to_string())
+        Column::new("username")
     }
     pub fn password() -> Column {
-        Column::from("password".to_string())
+        Column::new("password")
     }
 }
 
-impl Display for User {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        f.write_str("user")
+impl Model for User {
+    fn table() -> &'static str {
+        "user"
     }
 }
 
@@ -34,18 +36,18 @@ pub struct App {
 
 impl App {
     pub fn id() -> Column {
-        Column::from("id".to_string())
+        Column::new("id")
     }
     pub fn name() -> Column {
-        Column::from("name".to_string())
+        Column::new("name")
     }
     pub fn user_id() -> Column {
-        Column::from("user_id".to_string())
+        Column::new("user_id")
     }
 }
 
-impl Display for App {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        f.write_str("app")
+impl Model for App {
+    fn table() -> &'static str {
+        "app"
     }
 }

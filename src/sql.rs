@@ -1,5 +1,6 @@
 use std::any::Any;
 use std::fmt::Display;
+use std::mem;
 use std::sync::{Arc, Mutex};
 
 use crate::types::Column;
@@ -37,7 +38,7 @@ impl Query {
         self
     }
 
-    pub fn on(&self, on: Column) -> &Self {
+    pub fn on(&self, on: &Column) -> &Self {
         let mut parts = self.parts.lock().unwrap();
         parts.push(format!("ON {on}"));
         self
@@ -65,10 +66,13 @@ impl Query {
         self
     }
 
-    pub fn order_by(&self, columns: Vec<Column>) -> &Self {
+    pub fn order_by<T>(&self, columns: Vec<T>) -> &Self
+    where
+        T: Display + 'static,
+    {
         let mut part = Vec::<String>::default();
         for col in columns {
-            part.push(col.val.lock().unwrap().to_string());
+            part.push(format!("{col}"));
         }
         let mut parts = self.parts.lock().unwrap();
         parts.push(format!("ORDER BY {}", part.join(", ")));
@@ -85,19 +89,19 @@ impl Query {
         self
     }
 
-    pub fn values(&self, values: Vec<Column>) -> &Self {
+    pub fn values(&self, values: Vec<&Column>) -> &Self {
         let mut parts = self.parts.lock().unwrap();
         let mut part = Vec::<String>::default();
         let mut args = self.args.lock().unwrap();
         for col in values {
-            part.push(col.val.lock().unwrap().to_string());
+            part.push(col.val.lock().unwrap().to_string().replace(" = %s", ""));
             args.append(&mut col.args.lock().unwrap());
         }
-        parts.push(format!("VALUES {}", part.join(", ")));
+        parts.push(format!("VALUES ({})", part.join(", ")));
         self
     }
 
-    pub fn where_(&self, conditions: Column) -> &Self {
+    pub fn where_(&self, conditions: &Column) -> &Self {
         let mut parts = self.parts.lock().unwrap();
         parts.push(format!("WHERE {}", conditions.val.lock().unwrap()));
         let mut args = self.args.lock().unwrap();
@@ -111,7 +115,7 @@ impl Query {
         self
     }
 
-    pub fn update(&self, values: Vec<Column>) -> &Self {
+    pub fn update(&self, values: Vec<&Column>) -> &Self {
         let mut parts = self.parts.lock().unwrap();
         let mut part = Vec::<String>::default();
         let mut args = self.args.lock().unwrap();
@@ -127,5 +131,13 @@ impl Query {
         let mut parts = self.parts.lock().unwrap();
         parts.push(format!("IGNORE"));
         self
+    }
+
+    pub fn build(&self) -> (String, Vec<Box<dyn Any + Send + Sync>>)
+    {
+        let mut query = self.parts.lock().unwrap().join(" ");
+        query.push(';');
+        let args = mem::take(&mut *self.args.lock().unwrap());
+        (query, args)
     }
 }

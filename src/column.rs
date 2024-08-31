@@ -14,8 +14,8 @@ impl Display for Column {
 }
 
 impl Column {
-    pub fn from(val: String) -> Self {
-        let val = Arc::new(Mutex::new(val));
+    pub fn new(val: &str) -> Self {
+        let val = Arc::new(Mutex::new(val.to_string()));
         let args = Arc::new(Mutex::new(Vec::new()));
 
         Self { val, args }
@@ -23,15 +23,13 @@ impl Column {
 }
 
 impl Column {
-    pub fn asc(&self) -> &Self {
-        let mut val = self.val.lock().unwrap();
-        *val = format!("{val} ASC");
+    pub fn asc(self) -> Self {
+        *self.val.lock().unwrap() = format!("{} ASC", self.val.lock().unwrap());
         self
     }
 
-    pub fn desc(&self) -> &Self {
-        let mut val = self.val.lock().unwrap();
-        *val = format!("{val} DESC");
+    pub fn desc(self) -> Self {
+        *self.val.lock().unwrap() = format!("{} DESC", self.val.lock().unwrap());
         self
     }
 }
@@ -62,10 +60,7 @@ impl Column {
 }
 
 impl Column {
-    fn logical<T>(&self, operator: T, other: &Self) -> &Self
-    where
-        T: Display + 'static,
-    {
+    fn logical(&self, operator: &str, other: &Self) -> &Self {
         let mut val = self.val.lock().unwrap();
         *val = format!("({val} {operator} {other})");
         let mut args = self.args.lock().unwrap();
@@ -84,10 +79,17 @@ impl Column {
 }
 
 impl Column {
-    fn compare<T, S>(&self, sign: S, other: T) -> &Self
+    pub fn is(&self, other: Column) -> &Self {
+        let mut val = self.val.lock().unwrap();
+        *val = format!("{val} = {}", other.val.lock().unwrap());
+        self
+    }
+}
+
+impl Column {
+    fn compare<T>(&self, sign: &str, other: T) -> &Self
     where
         T: Any + Send + Sync,
-        S: Display + 'static,
     {
         let mut val = self.val.lock().unwrap();
         *val = format!("{val} {sign} %s");
