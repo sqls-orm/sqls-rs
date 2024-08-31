@@ -47,7 +47,10 @@ impl Query {
         self
     }
 
-    pub fn on<T>(&self, on: T) -> &Self where T: Display + 'static {
+    pub fn on<T>(&self, on: T) -> &Self
+    where
+        T: Display + 'static,
+    {
         let mut parts = self.parts.lock().unwrap();
         parts.push(format!("ON {on}"));
         self
@@ -79,22 +82,27 @@ impl Query {
     where
         T: Display + 'static,
     {
-        let mut part = Vec::<String>::default();
-        for col in columns {
-            part.push(format!("{col}"));
-        }
+        let part = columns
+            .iter()
+            .map(|col| format!("{col}"))
+            .collect::<Vec<String>>()
+            .join(", ");
         let mut parts = self.parts.lock().unwrap();
-        parts.push(format!("ORDER BY {}", part.join(", ")));
+        parts.push(format!("ORDER BY {part}"));
         self
     }
 
-    pub fn returning(&self, columns: Vec<Column>) -> &Self {
-        let mut part = Vec::<String>::default();
-        for col in columns {
-            part.push(col.val.lock().unwrap().to_string());
-        }
+    pub fn returning<T>(&self, columns: Vec<T>) -> &Self
+    where
+        T: Display + 'static,
+    {
+        let part = columns
+            .iter()
+            .map(|col| format!("{col}"))
+            .collect::<Vec<String>>()
+            .join(", ");
         let mut parts = self.parts.lock().unwrap();
-        parts.push(format!("RETURNING {}", part.join(", ")));
+        parts.push(format!("RETURNING {part}"));
         self
     }
 
@@ -102,11 +110,13 @@ impl Query {
         let mut parts = self.parts.lock().unwrap();
         let mut part = Vec::<String>::default();
         let mut args = self.args.lock().unwrap();
+        let mut placeholders = Vec::<String>::default();
         for col in values {
             part.push(col.val.lock().unwrap().to_string().replace(" = %s", ""));
+            placeholders.push("%s".to_string());
             args.append(&mut col.args.lock().unwrap());
         }
-        parts.push(format!("VALUES ({})", part.join(", ")));
+        parts.push(format!("({}) VALUES ({})", part.join(", "), placeholders.join(", ")));
         self
     }
 

@@ -35,26 +35,23 @@ impl Column {
 }
 
 impl Column {
-    pub fn count(&self) -> &Self {
-        let mut val = self.val.lock().unwrap();
-        *val = format!("COUNT({val})");
+    pub fn count(self) -> Self {
+        *self.val.lock().unwrap() = format!("COUNT({})", self.val.lock().unwrap());
         self
     }
 
-    pub fn distinct(&self) -> &Self {
-        let mut val = self.val.lock().unwrap();
-        *val = format!("DISTINCT {val}");
+    pub fn distinct(self) -> Self {
+        *self.val.lock().unwrap() = format!("DISTINCT {}", self.val.lock().unwrap());
         self
     }
 }
 
 impl Column {
-    pub fn as_<T>(&self, alias: T) -> &Self
+    pub fn as_<T>(self, alias: T) -> Self
     where
         T: Display + 'static,
     {
-        let mut val = self.val.lock().unwrap();
-        *val = format!("{val} AS {alias}");
+        *self.val.lock().unwrap() = format!("{} AS {alias}", self.val.lock().unwrap());
         self
     }
 }
@@ -79,9 +76,8 @@ impl Column {
 }
 
 impl Column {
-    pub fn is(&self, other: Column) -> &Self {
-        let mut val = self.val.lock().unwrap();
-        *val = format!("{val} = {}", other.val.lock().unwrap());
+    pub fn is(self, other: Column) -> Self {
+        *self.val.lock().unwrap() = format!("{} = {}", self.val.lock().unwrap(), other.val.lock().unwrap());
         self
     }
 }
