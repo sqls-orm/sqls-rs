@@ -1,0 +1,33 @@
+[package]
+name = "optional"
+version = "0.1.0"
+edition = "2021"
+description = """
+Derive macro oriented to work with GQL & SQL.
+Allows fetching arbitrary columns using "sqlx".
+"""
+
+[lib]
+name = "optional"
+path = "src/lib.rs"
+edition = "2021"
+proc-macro = true
+
+[features]
+default = ["sqlx"]
+sqlx = ["dep:sqlx"]
+debug = []
+clone = []
+copy = []
+
+[dependencies.sqlx]
+version = "0.8.1"
+optional = true
+
+[dependencies]
+quote = { version = "1.0.36" }
+proc-macro2 = { version = "1.0.86" }
+syn = { version = "2.0.72" }
+
+[dev-dependencies]
+tokio = { version = "1.39.3", features = ["full"] }

@@ -3,7 +3,7 @@ use std::fmt::Display;
 use std::mem;
 use std::sync::{Arc, Mutex};
 
-use crate::types::Column;
+use crate::column::Column;
 
 pub struct Query {
     pub parts: Arc<Mutex<Vec<String>>>,
@@ -164,8 +164,7 @@ impl Query {
         self
     }
 
-    pub fn build(&self) -> (String, Vec<Box<dyn Any + Send + Sync>>)
-    {
+    pub fn build(&self) -> (String, Vec<Box<dyn Any + Send + Sync>>) {
         let mut query = self.parts.lock().unwrap().join(" ");
         query.push(';');
         let args = mem::take(&mut *self.args.lock().unwrap());

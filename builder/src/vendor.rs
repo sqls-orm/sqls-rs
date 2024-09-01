@@ -9,7 +9,10 @@ pub fn insert() -> Query {
     Query::new(parts, Vec::new())
 }
 
-pub fn select<T>(columns: Vec<T>) -> Query where T: Display + 'static {
+pub fn select<T>(columns: Vec<T>) -> Query
+where
+    T: Display + 'static,
+{
     let part = columns
         .iter()
         .map(|col| format!("{col}"))

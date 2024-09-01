@@ -6,8 +6,9 @@ pub use vendor::{
     delete,
 };
 
+pub use column::Column;
+
 mod types;
 mod sql;
 mod column;
-pub mod models;
 mod vendor;
