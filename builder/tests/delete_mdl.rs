@@ -1,6 +1,7 @@
-use sql::models::Model;
-use sql::models;
-use sql;
+use builder as sql;
+use builder::Model;
+
+mod models;
 
 #[tokio::test]
 async fn delete_default() {

@@ -1,4 +1,6 @@
-use sql;
+use builder as sql;
+
+mod models;
 
 // #[tokio::test]
 // async fn insert_default() {

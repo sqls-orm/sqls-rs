@@ -8,7 +8,10 @@ pub use vendor::{
 
 pub use column::Column;
 
-mod types;
-mod sql;
+mod query;
 mod column;
 mod vendor;
+
+pub trait Model {
+    fn table() -> &'static str;
+}

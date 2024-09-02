@@ -14,20 +14,15 @@ edition = "2021"
 crate-type = ["lib"]
 
 [features]
-default = ["model"]
+#default = ["model"]
 
-model = ["dep:model"]
+#model = ["dep:model"]
 optional = ["dep:optional"]
 
-[dependencies.model]
-path = "../model"
-optional = true
-
-[dependencies.optional]
-path = "../optional"
-optional = true
-
 [dependencies]
+#model = { path = "../model", optional = true }
+optional = { path = "../optional", optional = true }
 
 [dev-dependencies]
 tokio = { version = "1.39.3", features = ["full"] }
+model = { path = "../model" }

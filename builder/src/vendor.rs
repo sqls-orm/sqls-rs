@@ -1,6 +1,6 @@
 use std::fmt::Display;
 
-use crate::sql::Query;
+use crate::query::Query;
 
 pub fn insert() -> Query {
     let mut parts = Vec::<String>::default();

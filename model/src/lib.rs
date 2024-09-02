@@ -15,8 +15,8 @@ pub fn derive(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
                         let name = attr_name.as_ref().unwrap().to_string();
 
                         quote::quote! {
-                            pub fn #attr_name() -> sql::Column {
-                                sql::Column::new(#name)
+                            pub fn #attr_name() -> builder::Column {
+                                builder::Column::new(#name)
                             }
                         }
                     });
@@ -32,13 +32,9 @@ pub fn derive(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let tablename = sct_ident.to_string();
 
     proc_macro::TokenStream::from(quote::quote! {
-        pub trait Model {
-            fn table() -> &'static str;
-        }
-
         impl #sct_ident #columns
 
-        impl Model for #sct_ident {
+        impl builder::Model for #sct_ident {
             fn table() -> &'static str {
                 #tablename
             }

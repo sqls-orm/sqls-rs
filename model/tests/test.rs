@@ -1,4 +1,5 @@
 use model::Model;
+use builder::Column;
 
 #[derive(Model)]
 struct User {
@@ -7,7 +8,7 @@ struct User {
 
 #[tokio::test]
 async fn main() {
-    let col = Column::new("id");
+    Column::new("id");
 
     format!("{}", User::id());
 
@@ -27,6 +28,6 @@ async fn main() {
     User::id().gt("other");
     User::id().ge("other");
 
-    User::id().and(User::id());
-    User::id().or(User::id());
+    User::id().eq("other").and(User::id().eq("other"));
+    User::id().eq("other").or(User::id().eq("other"));
 }
