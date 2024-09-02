@@ -6,6 +6,7 @@ pub use vendor::{
     delete,
 };
 
+pub use query::Query;
 pub use column::Column;
 
 mod query;
