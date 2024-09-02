@@ -1,0 +1,23 @@
+[package]
+name = "model"
+version = "0.1.0"
+edition = "2021"
+description = """
+Derive macro oriented to extend "builder" crate functionality.
+Allows to work with ORM like API.
+"""
+
+[lib]
+name = "model"
+path = "src/lib.rs"
+edition = "2021"
+proc-macro = true
+
+[dependencies]
+quote = { version = "1.0.36" }
+proc-macro2 = { version = "1.0.86" }
+syn = { version = "2.0.72" }
+builder = { path = "../builder" }
+
+[dev-dependencies]
+tokio = { version = "1.39.3", features = ["full"] }
