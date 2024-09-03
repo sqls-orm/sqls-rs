@@ -25,4 +25,7 @@ optional = { path = "../optional", optional = true }
 
 [dev-dependencies]
 tokio = { version = "1.39.3", features = ["full"] }
+sqlx = { version = "0.8.1", features = ["runtime-tokio", "mysql"] }
+optional = { path = "../optional" }
 model = { path = "../model" }
+dotenv = { version = "0.15.0" }
