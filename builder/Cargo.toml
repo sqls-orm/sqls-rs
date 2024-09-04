@@ -22,6 +22,7 @@ optional = ["dep:optional"]
 [dependencies]
 #model = { path = "../model", optional = true }
 optional = { path = "../optional", optional = true }
+sqlx = { version = "0.8.1", features = ["runtime-tokio", "mysql"] }
 
 [dev-dependencies]
 tokio = { version = "1.39.3", features = ["full"] }
