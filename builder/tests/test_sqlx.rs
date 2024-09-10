@@ -1,3 +1,4 @@
+use sqlx::MySql;
 use builder as sql;
 use builder::Model;
 use model::Model;
@@ -16,18 +17,11 @@ struct User {
 async fn select_distinct_count() {
     dotenv::dotenv().ok();
 
-    sqlx::query_as::<_, UserOptional>(r#"
+    sqlx::query_as::<MySql, UserOptional>(r#"
          SELECT username
          FROM user
          WHERE id = %s
-    "#)
-        .bind(0u8)
-        .fetch_optional()
-        .await
-        .unwrap_or_else(|e| {
-            println!("{}", e.to_string());
-            None
-        });
+    "#);
 
     let (query, args) = sql::select(vec![
         models::User::username().distinct(),

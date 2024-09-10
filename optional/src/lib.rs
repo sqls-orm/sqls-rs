@@ -108,24 +108,31 @@ pub fn derive(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
 
             #[cfg(feature = "gql")]
             pub async fn extract<'ctx>(
-                ctx: &async_graphql::Context<'ctx>,
-            ) -> Vec<std::string::String> {
-                use convert_case::Casing;
-                use convert_case as convert;
+                ctx: Option<&async_graphql::Context<'ctx>>,
+            ) -> &'static str {
+                match ctx {
+                    Some(context) => {
+                        use convert_case::Casing;
+                        use convert_case as convert;
 
-                let columns = #mdl_ident::columns().await;
+                        let columns = #mdl_ident::columns().await;
 
-                ctx
-                    .field()
-                    .selection_set()
-                    .filter_map(|field| {
-                        let name: std::string::String = field.name().to_case(convert::Case::Snake);
-                        match columns.contains(&name) {
-                            true => Some(name),
-                            false => None,
-                        }
-                    })
-                    .collect()
+                        ctx
+                            .field()
+                            .selection_set()
+                            .filter_map(|field| {
+                                let name: std::string::String = field.name().to_case(convert::Case::Snake);
+                                match columns.contains(&name) {
+                                    true => Some(name),
+                                    false => None,
+                                }
+                            })
+                            .collect::<Vec<String>>()
+                            .join(", ")
+                            .as_str()
+                    },
+                    None => "*"
+                }
             }
 
             pub fn original(self) -> #sct_ident {
