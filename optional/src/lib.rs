@@ -107,7 +107,7 @@ pub fn derive(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
 
             pub async fn extract<'ctx>(
                 ctx: Option<&async_graphql::Context<'ctx>>,
-            ) -> &'static str {
+            ) -> std::string::String {
                 match ctx {
                     Some(context) => {
                         use convert_case::Casing;
@@ -127,9 +127,8 @@ pub fn derive(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
                             })
                             .collect::<Vec<String>>()
                             .join(", ")
-                            .as_str()
                     },
-                    None => "*"
+                    None => std::string::String::from("*")
                 }
             }
 
