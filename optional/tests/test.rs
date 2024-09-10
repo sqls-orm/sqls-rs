@@ -1,10 +1,12 @@
 use optional::Optional;
 
+#[cfg(feature = "sql")]
 #[derive(Optional)]
 pub struct User {
     pub id: u8
 }
 
+#[cfg(feature = "sql")]
 #[tokio::test]
 async fn main() {
     let s = User {

@@ -13,15 +13,8 @@ path = "src/lib.rs"
 edition = "2021"
 crate-type = ["lib"]
 
-[features]
-#default = ["model"]
-
-#model = ["dep:model"]
-optional = ["dep:optional"]
-
 [dependencies]
-#model = { path = "../model", optional = true }
-optional = { path = "../optional", optional = true }
+optional = { path = "../optional" }
 
 [dev-dependencies]
 tokio = { version = "1.39.3", features = ["full"] }
