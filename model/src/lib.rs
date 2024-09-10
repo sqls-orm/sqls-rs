@@ -1,6 +1,7 @@
 extern crate proc_macro;
 extern crate quote;
 extern crate syn;
+extern crate builder;
 
 #[proc_macro_derive(Model)]
 pub fn derive(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
