@@ -13,12 +13,9 @@ path = "src/lib.rs"
 edition = "2021"
 crate-type = ["lib"]
 
-[dependencies]
-optional = { path = "../optional" }
-
 [dev-dependencies]
 tokio = { version = "1.39.3", features = ["full"] }
 sqlx = { version = "0.8.1", features = ["runtime-tokio", "mysql"] }
-optional = { path = "../optional" }
+optional = { path = "../optional", features = ["gql", "clone", "copy", "debug"] }
 model = { path = "../model" }
 dotenv = { version = "0.15.0" }

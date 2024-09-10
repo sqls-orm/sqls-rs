@@ -86,7 +86,7 @@ pub fn derive(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
         #[cfg_attr(feature = "debug", derive(Debug))]
         #[cfg_attr(feature = "clone", derive(Clone))]
         #[cfg_attr(feature = "copy", derive(Copy))]
-        #[cfg_attr(feature = "sql", derive(sqlx::FromRow))]
+        #[derive(sqlx::FromRow)]
         pub struct #mdl_ident #fields
 
         impl #sct_ident {

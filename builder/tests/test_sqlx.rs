@@ -5,7 +5,6 @@ use optional::Optional;
 
 mod models;
 
-#[cfg(feature = "sql")]
 #[derive(Optional, Model)]
 struct User {
     pub id: u8,
@@ -13,7 +12,6 @@ struct User {
     pub password: String,
 }
 
-#[cfg(feature = "sql")]
 #[tokio::test]
 async fn select_distinct_count() {
     dotenv::dotenv().ok();
