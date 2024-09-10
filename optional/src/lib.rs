@@ -26,6 +26,22 @@ pub fn derive(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
         _ => unimplemented!("#[derive(Optional)] supports only structs"),
     };
 
+    let columns = match &input.data {
+        syn::Data::Struct(data) => {
+            match data.fields {
+                syn::Fields::Named(ref fields) => {
+                    fields
+                        .named
+                        .iter()
+                        .map(|f| f.ident.as_ref().unwrap().to_string())
+                        .collect::<Vec<_>>()
+                }
+                _ => unimplemented!("#[derive(Optional)] supports only named struct attributes"),
+            }
+        }
+        _ => unimplemented!("#[derive(Optional)] supports only structs"),
+    };
+
     let sct_setters = match &input.data {
         syn::Data::Struct(data) => {
             match data.fields {
@@ -70,7 +86,7 @@ pub fn derive(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
         #[cfg_attr(feature = "debug", derive(Debug))]
         #[cfg_attr(feature = "clone", derive(Clone))]
         #[cfg_attr(feature = "copy", derive(Copy))]
-        #[derive(sqlx::FromRow)]
+        #[cfg_attr(feature = "sql", derive(sqlx::FromRow))]
         pub struct #mdl_ident #fields
 
         impl #sct_ident {
@@ -80,6 +96,38 @@ pub fn derive(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
         }
 
         impl #mdl_ident {
+            #[cfg(feature = "gql")]
+            pub async fn columns() -> &'static Vec<std::string::String> {
+                use tokio::sync::OnceCell;
+
+                static VEC: OnceCell<Vec<std::string::String>> = OnceCell::const_new();
+                VEC.get_or_init(|| async { vec![
+                    #(#columns.to_string()),*
+                ] }).await
+            }
+
+            #[cfg(feature = "gql")]
+            pub async fn extract<'ctx>(
+                ctx: &async_graphql::Context<'ctx>,
+            ) -> Vec<std::string::String> {
+                use convert_case::Casing;
+                use convert_case as convert;
+
+                let columns = #mdl_ident::columns().await;
+
+                ctx
+                    .field()
+                    .selection_set()
+                    .filter_map(|field| {
+                        let name: std::string::String = field.name().to_case(convert::Case::Snake);
+                        match columns.contains(&name) {
+                            true => Some(name),
+                            false => None,
+                        }
+                    })
+                    .collect()
+            }
+
             pub fn original(self) -> #sct_ident {
                 #sct_ident #sct_setters
             }
