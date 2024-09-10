@@ -115,7 +115,7 @@ pub fn derive(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
 
                         let columns = #mdl_ident::columns().await;
 
-                        ctx
+                        context
                             .field()
                             .selection_set()
                             .filter_map(|field| {
