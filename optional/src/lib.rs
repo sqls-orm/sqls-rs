@@ -96,7 +96,6 @@ pub fn derive(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
         }
 
         impl #mdl_ident {
-            #[cfg(feature = "gql")]
             pub async fn columns() -> &'static Vec<std::string::String> {
                 use tokio::sync::OnceCell;
 
@@ -106,7 +105,6 @@ pub fn derive(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
                 ] }).await
             }
 
-            #[cfg(feature = "gql")]
             pub async fn extract<'ctx>(
                 ctx: Option<&async_graphql::Context<'ctx>>,
             ) -> &'static str {
