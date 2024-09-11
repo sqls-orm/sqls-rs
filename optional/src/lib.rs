@@ -120,7 +120,7 @@ pub fn derive(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
                             .selection_set()
                             .filter_map(|field| {
                                 let name: std::string::String = field.name().to_case(convert::Case::Snake);
-                                columns.contains(&name).then(|| Some(name)).or_else(|| None)
+                                columns.contains(&name).then(|| name)
                             })
                             .collect::<Vec<String>>();
                         let primary = std::string::String::from("id");
