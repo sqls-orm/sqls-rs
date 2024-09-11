@@ -115,7 +115,7 @@ pub fn derive(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
 
                         let columns = #mdl_ident::columns().await;
 
-                        context
+                        let mut selection = context
                             .field()
                             .selection_set()
                             .filter_map(|field| {
@@ -125,8 +125,11 @@ pub fn derive(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
                                     false => None,
                                 }
                             })
-                            .collect::<Vec<String>>()
-                            .join(", ")
+                            .collect::<Vec<String>>();
+                        if !selection.len() {
+                            selection.push(std::string::String::from("id"));
+                        }
+                        selection.join(", ")
                     },
                     None => std::string::String::from("*")
                 }
