@@ -126,7 +126,7 @@ pub fn derive(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
                                 }
                             })
                             .collect::<Vec<String>>();
-                        selection.is_empty.then(|| selection.push(std::string::String::from("id")));
+                        selection.is_empty().then(|| selection.push(std::string::String::from("id")));
                         selection.join(", ")
                     },
                     None => std::string::String::from("*")
