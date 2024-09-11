@@ -120,13 +120,12 @@ pub fn derive(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
                             .selection_set()
                             .filter_map(|field| {
                                 let name: std::string::String = field.name().to_case(convert::Case::Snake);
-                                match columns.contains(&name) {
-                                    true => Some(name),
-                                    false => None,
-                                }
+                                columns.contains(&name).then(|| Some(name)).or_else(|| None)
                             })
                             .collect::<Vec<String>>();
-                        selection.is_empty().then(|| selection.push(std::string::String::from("id")));
+                        let primary = std::string::String::from("id");
+                        (!selection.contains(&primary)).then(|| selection.push(primary));
+
                         selection.join(", ")
                     },
                     None => std::string::String::from("*")
