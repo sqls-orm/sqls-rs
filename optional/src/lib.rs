@@ -84,10 +84,23 @@ pub fn derive(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let sct_ident = input.ident;
     let mdl_ident = syn::Ident::new(&format!("{}Optional", sct_ident), sct_ident.span());
 
+    let debug = match cfg!(feature = "debug") {
+        true => quote::quote! { #[derive(Debug)] },
+        false => quote::quote! {},
+    };
+    let clone = match cfg!(feature = "clone") {
+        true => quote::quote! { #[derive(Clone)] },
+        false => quote::quote! {},
+    };
+    let copy = match cfg!(feature = "copy") {
+        true => quote::quote! { #[derive(Copy)] },
+        false => quote::quote! {},
+    };
+
     proc_macro::TokenStream::from(quote::quote! {
-        #[cfg_attr(feature = "debug", derive(Debug))]
-        #[cfg_attr(feature = "clone", derive(Clone))]
-        #[cfg_attr(feature = "copy", derive(Copy))]
+        #debug
+        #clone
+        #copy
         #[derive(sqlx::FromRow)]
         pub struct #mdl_ident #fields
 
