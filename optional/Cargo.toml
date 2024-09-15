@@ -19,21 +19,14 @@ debug = []
 clone = []
 copy = []
 
-[dependencies.async-graphql]
-version = "7.0.7"
-
-[dependencies.convert_case]
-version = "0.6.0"
-
-[dependencies.tokio]
-version = "1.39.3"
-features = ["sync"]
-
 [dependencies]
 quote = { version = "1.0.36" }
 proc-macro2 = { version = "1.0.86" }
 syn = { version = "2.0.72" }
 sqlx = { version = "0.8.1" }
+convert_case = { version = "0.6.0" }
+async-graphql = { version = "7.0.7" }
+tokio = { version = "1.39.3", features = ["sync"] }
 
 [dev-dependencies]
 tokio = { version = "1.39.3", features = ["full"] }

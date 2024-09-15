@@ -11,10 +11,12 @@ pub fn derive(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
             match data.fields {
                 syn::Fields::Named(ref fields) => {
                     let opt_fields = fields.named.iter().map(|field| {
+                        let attrs = &field.attrs;
                         let attr_name = &field.ident;
                         let attr_ty = &field.ty;
                         quote::quote! {
                             #[sqlx(default)]
+                            #(#attrs)*
                             pub #attr_name: Option<#attr_ty>
                         }
                     });
