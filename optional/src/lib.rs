@@ -82,7 +82,7 @@ pub fn derive(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     };
 
     let sct_ident = input.ident;
-    let table = sct_ident.to_string();
+    let table = sct_ident.to_string().to_lowercase();
     let mdl_ident = syn::Ident::new(&format!("{}Optional", sct_ident), sct_ident.span());
 
     let debug = match cfg!(feature = "debug") {
