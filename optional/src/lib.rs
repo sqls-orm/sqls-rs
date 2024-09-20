@@ -82,6 +82,7 @@ pub fn derive(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     };
 
     let sct_ident = input.ident;
+    let table = sct_ident.to_string();
     let mdl_ident = syn::Ident::new(&format!("{}Optional", sct_ident), sct_ident.span());
 
     let debug = match cfg!(feature = "debug") {
@@ -111,6 +112,10 @@ pub fn derive(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
         }
 
         impl #mdl_ident {
+            pub fn columnify(name: impl std::fmt::Display) -> std::string::String {
+                return format!("`{}`.`{}`", #table, name);
+            }
+
             pub async fn columns() -> &'static Vec<std::string::String> {
                 use tokio::sync::OnceCell;
 
@@ -135,10 +140,10 @@ pub fn derive(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
                             .selection_set()
                             .filter_map(|field| {
                                 let name: std::string::String = field.name().to_case(convert::Case::Snake);
-                                columns.contains(&name).then(|| name)
+                                columns.contains(&name).then(|| #mdl_ident::columnify(name))
                             })
                             .collect::<Vec<String>>();
-                        let primary = std::string::String::from("id");
+                        let primary = #mdl_ident::columnify("id");
                         (!selection.contains(&primary)).then(|| selection.push(primary));
 
                         selection.join(", ")
