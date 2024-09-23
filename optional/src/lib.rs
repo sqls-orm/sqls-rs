@@ -1,7 +1,7 @@
-extern crate convert_case;
 extern crate proc_macro;
 extern crate quote;
 extern crate syn;
+use convert_case::{Casing, Case};
 
 #[proc_macro_derive(Optional)]
 pub fn derive(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
@@ -131,16 +131,13 @@ pub fn derive(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
             ) -> std::string::String {
                 match ctx {
                     Some(context) => {
-                        use crate::convert_case::Casing;
-                        use crate::convert_case as convert;
-
                         let columns = #mdl_ident::columns().await;
 
                         let mut selection = context
                             .field()
                             .selection_set()
                             .filter_map(|field| {
-                                let name: std::string::String = field.name().to_case(convert::Case::Snake);
+                                let name: std::string::String = field.name().to_case(Case::Snake);
                                 columns.contains(&name).then(|| #mdl_ident::columnify(name))
                             })
                             .collect::<Vec<String>>();
