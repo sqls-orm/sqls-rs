@@ -1,3 +1,4 @@
+extern crate convert_case;
 extern crate proc_macro;
 extern crate quote;
 extern crate syn;
@@ -130,8 +131,8 @@ pub fn derive(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
             ) -> std::string::String {
                 match ctx {
                     Some(context) => {
-                        use convert_case::Casing;
-                        use convert_case as convert;
+                        use crate::convert_case::Casing;
+                        use crate::convert_case as convert;
 
                         let columns = #mdl_ident::columns().await;
 
