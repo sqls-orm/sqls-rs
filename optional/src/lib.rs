@@ -1,6 +1,8 @@
 extern crate proc_macro;
 extern crate quote;
 extern crate syn;
+use convert_case::Casing;
+use convert_case as convert;
 
 #[proc_macro_derive(Optional)]
 pub fn derive(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
@@ -82,7 +84,7 @@ pub fn derive(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     };
 
     let sct_ident = input.ident;
-    let table = sct_ident.to_string().to_lowercase();
+    let table = sct_ident.to_string().to_case(convert::Case::Snake);
     let mdl_ident = syn::Ident::new(&format!("{}Optional", sct_ident), sct_ident.span());
 
     let debug = match cfg!(feature = "debug") {
