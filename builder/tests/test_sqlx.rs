@@ -1,12 +1,12 @@
 use sqlx::MySql;
 use builder as sql;
 use builder::Model;
-use model::Model;
-use optional::Optional;
+// use model::Model;
+use optional::Model;
 
 mod models;
 
-#[derive(Optional, Model)]
+#[derive(Model)]
 struct User {
     pub id: u8,
     pub username: String,
@@ -17,7 +17,7 @@ struct User {
 async fn select_distinct_count() {
     dotenv::dotenv().ok();
 
-    sqlx::query_as::<MySql, UserOptional>(r#"
+    sqlx::query_as::<MySql, UserModel>(r#"
          SELECT username
          FROM user
          WHERE id = %s

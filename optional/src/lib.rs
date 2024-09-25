@@ -4,7 +4,7 @@ extern crate syn;
 use convert_case::Casing;
 use convert_case as convert;
 
-#[proc_macro_derive(Optional, attributes(table, wrapper))]
+#[proc_macro_derive(Model, attributes(table, wrapper))]
 pub fn derive(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let input = syn::parse_macro_input!(input as syn::DeriveInput);
 
@@ -24,10 +24,10 @@ pub fn derive(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
                     });
                     quote::quote! { { #(#opt_fields,)* } }
                 }
-                _ => unimplemented!("#[derive(Optional)] supports only named struct attributes"),
+                _ => unimplemented!("#[derive(Model)] supports only named struct attributes"),
             }
         }
-        _ => unimplemented!("#[derive(Optional)] supports only structs"),
+        _ => unimplemented!("#[derive(Model)] supports only structs"),
     };
 
     let columns = match &input.data {
@@ -40,10 +40,10 @@ pub fn derive(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
                         .map(|f| f.ident.as_ref().unwrap().to_string())
                         .collect::<Vec<_>>()
                 }
-                _ => unimplemented!("#[derive(Optional)] supports only named struct attributes"),
+                _ => unimplemented!("#[derive(Model)] supports only named struct attributes"),
             }
         }
-        _ => unimplemented!("#[derive(Optional)] supports only structs"),
+        _ => unimplemented!("#[derive(Model)] supports only structs"),
     };
 
     let sct_setters = match &input.data {
@@ -61,10 +61,10 @@ pub fn derive(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
                     });
                     quote::quote! { { #(#setters,)* } }
                 }
-                _ => unimplemented!("#[derive(Optional)] supports only named struct attributes"),
+                _ => unimplemented!("#[derive(Model)] supports only named struct attributes"),
             }
         }
-        _ => unimplemented!("#[derive(Optional)] supports only structs"),
+        _ => unimplemented!("#[derive(Model)] supports only structs"),
     };
 
     let mdl_setters = match input.data {
@@ -77,10 +77,10 @@ pub fn derive(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
                     });
                     quote::quote! { { #(#setters,)* } }
                 }
-                _ => unimplemented!("#[derive(Optional)] supports only named struct attributes"),
+                _ => unimplemented!("#[derive(Model)] supports only named struct attributes"),
             }
         }
-        _ => unimplemented!("#[derive(Optional)] supports only structs"),
+        _ => unimplemented!("#[derive(Model)] supports only structs"),
     };
 
     let sct_ident = input.ident;
@@ -103,7 +103,7 @@ pub fn derive(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
         None => std::string::String::from("\""),
     };
 
-    let mdl_ident = syn::Ident::new(&format!("{}Optional", sct_ident), sct_ident.span());
+    let mdl_ident = syn::Ident::new(&format!("{}Model", sct_ident), sct_ident.span());
 
     let debug = match cfg!(feature = "debug") {
         true => quote::quote! { #[derive(Debug)] },
@@ -126,7 +126,7 @@ pub fn derive(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
         pub struct #mdl_ident #fields
 
         impl #sct_ident {
-            pub fn optional(self) -> #mdl_ident {
+            pub fn model(self) -> #mdl_ident {
                 #mdl_ident #mdl_setters
             }
         }
@@ -172,7 +172,7 @@ pub fn derive(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
                 }
             }
 
-            pub fn original(self) -> #sct_ident {
+            pub fn structure(self) -> #sct_ident {
                 #sct_ident #sct_setters
             }
         }

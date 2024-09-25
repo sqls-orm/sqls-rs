@@ -1,6 +1,6 @@
-use optional::Optional;
+use optional::Model;
 
-#[derive(Optional)]
+#[derive(Model)]
 pub struct User {
     pub id: u8
 }
@@ -12,14 +12,14 @@ async fn main() {
     };
     s.id;
 
-    let o = s.optional();
+    let o = s.model();
     o.id.unwrap();
 
-    let o = UserOptional {
+    let o = UserModel {
         id: Some(2)
     };
     o.id.unwrap();
 
-    let s = o.original();
+    let s = o.structure();
     s.id;
 }
