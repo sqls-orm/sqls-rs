@@ -4,7 +4,7 @@ extern crate syn;
 use convert_case::Casing;
 use convert_case as convert;
 
-#[proc_macro_derive(Optional)]
+#[proc_macro_derive(Optional, attributes(table, wrapper))]
 pub fn derive(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let input = syn::parse_macro_input!(input as syn::DeriveInput);
 
@@ -84,7 +84,25 @@ pub fn derive(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     };
 
     let sct_ident = input.ident;
-    let table = sct_ident.to_string().to_case(convert::Case::Snake);
+
+    let table = match input
+        .attrs
+        .iter()
+        .find(|a| a.path().is_ident("table".into()))
+    {
+        Some(name) => name.path().get_ident().unwrap().to_string(),
+        None => sct_ident.to_string().to_case(convert::Case::Snake),
+    };
+
+    let wrapper = match input
+        .attrs
+        .iter()
+        .find(|a| a.path().is_ident("wrapper".into()))
+    {
+        Some(name) => name.path().get_ident().unwrap().to_string(),
+        None => std::string::String::from("\""),
+    };
+
     let mdl_ident = syn::Ident::new(&format!("{}Optional", sct_ident), sct_ident.span());
 
     let debug = match cfg!(feature = "debug") {
@@ -115,7 +133,7 @@ pub fn derive(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
 
         impl #mdl_ident {
             pub fn columnify(name: impl std::fmt::Display) -> std::string::String {
-                return format!("\"{}\".\"{}\"", #table, name);
+                return format!("{w}{}{w}.{w}{}{w}", #table, name, w=#wrapper);
             }
 
             pub async fn columns() -> &'static Vec<std::string::String> {
@@ -150,7 +168,7 @@ pub fn derive(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
 
                         selection.join(", ")
                     },
-                    None => std::string::String::from("*")
+                    None => #mdl_ident::columnify("*")
                 }
             }
 
