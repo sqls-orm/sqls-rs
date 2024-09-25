@@ -1,6 +1,7 @@
-use optional::Model;
+use convert_case;
 
-#[derive(Model)]
+#[derive(optional::Model)]
+#[sql(table = "renamed")]
 pub struct User {
     pub id: u8
 }
